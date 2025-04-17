@@ -133,11 +133,11 @@ def show_exam_result(request, course_id, submission_id):
     choices = submission.choices.all()
 
     score = 0
-    questions = course.RELATION_SET.all()
+    questions = course.question_set.all()
 
     for question in questions:
-        correct_choices = question.RELATION_SET.filter(is_correct = True)
-        selected_choices = choices.filter(selected = True)
+        correct_choices = question.choice_set.filter(is_correct = True)
+        selected_choices = choices.filter(question=question)
 
         if set(correct_choices) == set(selected_choices):
             score += question.grade
@@ -145,5 +145,7 @@ def show_exam_result(request, course_id, submission_id):
     context['course'] = course
     context['grade'] = score
     context['choices'] = choices
+
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
